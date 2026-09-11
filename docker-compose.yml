@@ -1,0 +1,72 @@
+services:
+  # Servidor Web Apache
+  web:
+    image: httpd:2.4-alpine
+    container_name: sistema_ventas_web
+    ports:
+      - "${APP_PORT:-8081}:80"
+    volumes:
+      - ./docker/apache/httpd.conf:/usr/local/apache2/conf/httpd.conf:ro
+      - ./:/var/www/html
+    depends_on:
+      - app
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  # Aplicación PHP-FPM
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        UID: ${UID:-1000}
+        GID: ${GID:-1000}
+    container_name: sistema_ventas_app
+    user: "www-data:www-data"
+    volumes:
+      - ./:/var/www/html
+    env_file:
+      - .env.docker
+    command: sh -c "composer install --no-interaction --optimize-autoloader && php-fpm"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  # Base de Datos MySQL 8.0
+  db:
+    image: mysql:8.0
+    container_name: sistema_ventas_db
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    environment:
+      MYSQL_ROOT_PASSWORD: root_secret
+      MYSQL_DATABASE: sistemadeventas
+      MYSQL_USER: sistema_user
+      MYSQL_PASSWORD: sistema_pass
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
+      - ./database/seeder.sql:/docker-entrypoint-initdb.d/02_seeder.sql:ro
+    ports:
+      - "${DB_PORT:-3306}:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot_secret"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - app-network
+    restart: unless-stopped
+
+volumes:
+  db_data:
+    driver: local
+
+networks:
+  app-network:
+    driver: bridge

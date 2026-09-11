@@ -80,16 +80,70 @@ Historial de compras a proveedores, con actualización automática de stock al r
 
 ## Requisitos
 
-- PHP 8.x con extensiones `pdo_mysql`, `gd`, `mbstring`, `json`
-- MySQL 5.7+ / MariaDB 10.4+
-- Apache 2.4+ (incluido en XAMPP)
-- Composer
+- **Con Docker (Recomendado):** Docker 20.10+ y Docker Compose v2+
+- **Sin Docker:**
+  - PHP 8.x con extensiones `pdo_mysql`, `gd`, `mbstring`, `json`, `zip`, `bcmath`
+  - MySQL 5.7+ / MariaDB 10.4+
+  - Apache 2.4+ (incluido en XAMPP)
+  - Composer
 
 ---
 
 ## Instalación
 
-### 1. Clonar el repositorio
+### Opción A: Despliegue con Docker (Recomendado)
+
+1. **Clonar el repositorio:**
+
+```bash
+git clone <url> Sistema_de_Ventas_PHP
+cd Sistema_de_Ventas_PHP
+```
+
+2. **Iniciar los servicios con Docker Compose:**
+
+```bash
+docker compose up -d --build
+```
+
+> La primera vez se construirá la imagen PHP 8.2 FPM, se instalarán las dependencias vía Composer y MySQL 8.0 importará automáticamente el esquema (`database/schema.sql`) y los datos iniciales (`database/seeder.sql`).
+
+3. **Acceder a la aplicación:**
+
+Accede en tu navegador a: **[http://localhost:8081](http://localhost:8081)**
+
+4. **Usuarios de prueba:**
+
+| Rol           | Email                 | Contraseña   |
+| ------------- | --------------------- | ------------ |
+| Administrador | admin@sistema.com     | admin123     |
+| Vendedor      | vendedor@sistema.com  | vendedor123  |
+| Comprador     | comprador@sistema.com | comprador123 |
+
+5. **Comandos útiles con Docker:**
+
+```bash
+# Ver estado de los contenedores
+docker compose ps
+
+# Ver logs en vivo
+docker compose logs -f
+
+# Ejecutar la suite de tests en el contenedor
+docker compose exec app composer test
+
+# Detener los contenedores
+docker compose down
+
+# Recrear la base de datos limpia desde cero
+docker compose down -v && docker compose up -d
+```
+
+---
+
+### Opción B: Instalación local clásica (XAMPP)
+
+#### 1. Clonar el repositorio
 
 ```bash
 # Linux
@@ -102,13 +156,13 @@ git clone <url> C:\xampp\htdocs\Sistema_de_Ventas_PHP
 git clone <url> /Applications/XAMPP/htdocs/Sistema_de_Ventas_PHP
 ```
 
-### 2. Instalar dependencias
+#### 2. Instalar dependencias
 
 ```bash
 composer install
 ```
 
-### 3. Crear e importar la base de datos
+#### 3. Crear e importar la base de datos
 
 **Linux / macOS:**
 
@@ -136,7 +190,7 @@ El seeder crea los siguientes usuarios de prueba:
 
 > Cambiar estas contraseñas antes de usar en producción.
 
-### 4. Configurar variables de entorno
+#### 4. Configurar variables de entorno
 
 ```bash
 cp .env.example .env
@@ -146,6 +200,7 @@ Variables mínimas:
 
 ```dotenv
 DB_HOST=localhost
+DB_PORT=3306
 DB_NAME=sistemadeventas
 DB_USER=root
 DB_PASS=
@@ -170,13 +225,13 @@ MAIL_FROM_NAME="Sistema de Ventas"
 
 > `APP_URL` debe incluir `/public`. `MAIL_PASSWORD` debe ser una **Contraseña de Aplicación** de Google, no la contraseña de la cuenta.
 
-### 5. Permisos de directorio (Linux / macOS)
+#### 5. Permisos de directorio (Linux / macOS)
 
 ```bash
 chmod 755 public/uploads/products/
 ```
 
-### 6. Iniciar el servidor
+#### 6. Iniciar el servidor
 
 **Linux:** `sudo /opt/lampp/lampp start`
 

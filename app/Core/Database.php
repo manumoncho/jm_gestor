@@ -39,13 +39,14 @@ class Database
     private function connect(): void
     {
         $host = Config::get('DB_HOST', 'localhost');
+        $port = Config::get('DB_PORT', '3306');
         $db   = Config::get('DB_NAME', Config::get('DB_DATABASE', 'test'));
         $user = Config::get('DB_USER', Config::get('DB_USERNAME', 'root'));
         $pass = Config::get('DB_PASS', Config::get('DB_PASSWORD', ''));
         $charset = 'utf8mb4';
 
         try {
-            $dsn = "mysql:host={$host};dbname={$db};charset={$charset}";
+            $dsn = "mysql:host={$host};port={$port};dbname={$db};charset={$charset}";
             $this->connection = new PDO($dsn, $user, $pass, [
                 PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,

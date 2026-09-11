@@ -1,0 +1,14 @@
+.git
+.gitignore
+.github
+.env
+.env.testing.example
+.mcp.example.json
+.claude
+.antigravityignore
+node_modules
+tests
+vendor
+database/migrations
+*.md
+docker-compose*.yml
