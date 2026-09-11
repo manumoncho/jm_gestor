@@ -63,6 +63,23 @@ services:
       - app-network
     restart: unless-stopped
 
+  # Gestor de Base de Datos phpMyAdmin
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: sistema_ventas_phpmyadmin
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      UPLOAD_LIMIT: 50M
+    ports:
+      - "${PMA_PORT:-8082}:80"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - app-network
+    restart: unless-stopped
+
 volumes:
   db_data:
     driver: local

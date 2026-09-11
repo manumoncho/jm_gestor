@@ -108,9 +108,13 @@ docker compose up -d --build
 
 > La primera vez se construirá la imagen PHP 8.2 FPM, se instalarán las dependencias vía Composer y MySQL 8.0 importará automáticamente el esquema (`database/schema.sql`) y los datos iniciales (`database/seeder.sql`).
 
-3. **Acceder a la aplicación:**
+3. **Acceder a los servicios:**
 
-Accede en tu navegador a: **[http://localhost:8081](http://localhost:8081)**
+- **Aplicación web:** **[http://localhost:8081](http://localhost:8081)**
+- **phpMyAdmin (gestión de base de datos):** **[http://localhost:8082](http://localhost:8082)**
+  - Servidor: `db`
+  - Usuario: `root` (o `sistema_user`)
+  - Contraseña: `root_secret` (o `sistema_pass`)
 
 4. **Usuarios de prueba:**
 
