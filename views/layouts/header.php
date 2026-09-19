@@ -52,6 +52,8 @@
     <script>
         const BASE_URL = '<?= BASE_URL ?>';
     </script>
+        <!-- Script key detection -->
+    <script src="<?= BASE_URL ?>/js/core/barcode-shortcuts.js?v=<?= APP_VERSION ?>"></script>
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">

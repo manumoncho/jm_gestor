@@ -344,7 +344,9 @@ $('#formVenta').on('submit', function (e) {
         return;
     }
     // Limpiar sesión al confirmar la venta
-    sessionStorage.removeItem('pos_client');
+    // vamos a tener al cliente final elegido permanentemente
+    // TODO: opcion de configuracion para mantener el último cliente
+    //sessionStorage.getItem('pos_client');
     sessionStorage.removeItem('pos_step');
 });
 
@@ -355,7 +357,7 @@ $('#btn-cancelar-venta').on('click', function () {
     const nroVenta  = $btn.data('nro-venta');
     const csrfToken = $btn.data('csrf');
 
-    sessionStorage.removeItem('pos_client');
+    //sessionStorage.getItem('pos_client');
     sessionStorage.removeItem('pos_step');
 
     fetch(BASE_URL + '/sales/cancel', {
